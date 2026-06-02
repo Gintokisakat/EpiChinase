@@ -1,9 +1,5 @@
 # Epichinese Agent Instructions
 
-## Roles
-- **opencode** (big-pickle model): Writes ALL code. Never does content tasks.
-- **Kimi** (Moonshot AI): Handles Chinese content extraction, translations, pinyin verification, SVG mascot generation. Never writes code.
-
 ## Shared Context
 Always read `CONTEXT.md` and `TASKS.md` at the start of a session. Update `TASKS.md` when completing items.
 

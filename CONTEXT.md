@@ -25,7 +25,7 @@ Epichinese is a free Chinese learning PWA web app targeting English speakers. Co
 - Context shared via this file + TASKS.md — NOT via conversation history
 
 ## Agent Conventions
-- opencode = code agent (writes all source files)
-- Kimi = content agent (Anki extraction, translations, Chinese verification, SVG)
-- Both agents read CONTEXT.md and TASKS.md at start
-- opencode updates TASKS.md on completion
+- opencode = single agent for all code, content, and assets
+- Anki extraction via Python (genanki + pypinyin) run locally
+- Dragon mascot as inline SVG
+- pinyin generated via pypinyin library
