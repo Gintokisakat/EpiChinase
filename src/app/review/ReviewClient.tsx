@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FSRS, Rating } from "ts-fsrs";
@@ -36,13 +36,15 @@ export default function ReviewClient({
   const [cards, setCards] = useState(initialCards);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
-  const f = new FSRS({});
+  const [loading, setLoading] = useState(false);
+  const f = useRef(new FSRS({})).current;
 
   const current = cards[index];
 
   const handleRating = useCallback(
     async (rating: Rating) => {
-      if (!current) return;
+      if (!current || loading) return;
+      setLoading(true);
       const supabase = createClient();
 
       const now = new Date();
@@ -55,17 +57,26 @@ export default function ReviewClient({
         reps: current.reps,
         lapses: current.lapses,
         state: current.state,
+        retrievability: current.retrievability,
         learning_steps: 0,
         last_elapsed_days: current.elapsed_days,
       };
 
       const { card: updated } = f.next(card, now, rating as 1 | 2 | 3 | 4);
+      const retrievability = parseFloat(f.get_retrievability(updated, now)) / 100;
 
-      await supabase
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push("/login");
+        return;
+      }
+
+      const { error } = await supabase
         .from("user_cards")
         .update({
           difficulty: updated.difficulty,
           stability: updated.stability,
+          retrievability,
           elapsed_days: updated.elapsed_days,
           scheduled_days: updated.scheduled_days,
           reps: updated.reps,
@@ -74,17 +85,24 @@ export default function ReviewClient({
           due: updated.due.toISOString(),
           last_review: now.toISOString(),
         })
-        .eq("user_id", (await supabase.auth.getUser()).data.user?.id)
+        .eq("user_id", user.id)
         .eq("card_id", current.card_id);
 
+      if (error) {
+        console.error("Failed to save rating:", error);
+        setLoading(false);
+        return;
+      }
+
       setFlipped(false);
+      setLoading(false);
       if (index < cards.length - 1) {
         setIndex((i) => i + 1);
       } else {
         router.push("/dashboard");
       }
     },
-    [current, index, cards.length, router, f],
+    [current, index, cards.length, router, f, loading],
   );
 
   if (!current) {
@@ -122,7 +140,7 @@ export default function ReviewClient({
       <main className="flex flex-1 flex-col items-center justify-center px-6 gap-4">
         <Dragon mood="studying" width={64} height={64} />
         <div
-          onClick={() => setFlipped(true)}
+          onClick={() => !loading && setFlipped(true)}
           className="flex w-full max-w-md cursor-pointer flex-col items-center justify-center rounded-3xl border border-ink/5 bg-white p-10 text-center shadow-lg transition-all hover:shadow-xl min-h-[320px]"
         >
           {!flipped ? (
@@ -131,11 +149,15 @@ export default function ReviewClient({
                 {current.card.chinese}
               </p>
               {current.card.audio && (
-                <audio
-                  src={`/audio/${current.card.audio}`}
-                  autoPlay
-                  className="mt-4"
-                />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    new Audio(`/api/audio/${current.card.audio}`).play().catch(() => {});
+                  }}
+                  className="mt-4 rounded-lg bg-jade-500 px-4 py-2 text-sm text-white"
+                >
+                  🔊 Escuchar
+                </button>
               )}
             </>
           ) : (
@@ -167,9 +189,10 @@ export default function ReviewClient({
               <button
                 key={btn.label}
                 onClick={() => handleRating(btn.rating)}
-                className={`rounded-xl px-5 py-3 text-sm font-semibold text-white transition-transform active:scale-95 ${btn.cls}`}
+                disabled={loading}
+                className={`rounded-xl px-5 py-3 text-sm font-semibold text-white transition-transform active:scale-95 disabled:opacity-50 ${btn.cls}`}
               >
-                {btn.label}
+                {loading ? "..." : btn.label}
               </button>
             ))}
           </div>

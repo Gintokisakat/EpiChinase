@@ -27,9 +27,39 @@ CREATE TABLE user_cards (
   UNIQUE(user_id, card_id)
 );
 
--- Daily streak tracking
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS last_study_date DATE;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS current_streak INTEGER DEFAULT 0;
+-- Profiles: user metadata
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT,
+  streak INTEGER DEFAULT 0,
+  current_streak INTEGER DEFAULT 0,
+  xp INTEGER DEFAULT 0,
+  dragon_level INTEGER DEFAULT 1,
+  last_study_date DATE,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Auto-create profile on signup
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email)
+  VALUES (NEW.id, NEW.email);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+
+-- RLS: profiles are readable/updatable by the owner
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "users can read own profile"
+  ON profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "users can update own profile"
+  ON profiles FOR UPDATE USING (auth.uid() = id);
 
 -- RLS: cards are readable by all authenticated users
 ALTER TABLE cards ENABLE ROW LEVEL SECURITY;

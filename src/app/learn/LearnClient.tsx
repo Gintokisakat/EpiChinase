@@ -40,9 +40,13 @@ export default function LearnClient({
       const { card } = f.next(empty, now, rating as 1 | 2 | 3 | 4);
 
       const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push("/login");
+        return;
+      }
 
-      await supabase.from("user_cards").insert({
-        user_id: user?.id,
+      const { error } = await supabase.from("user_cards").insert({
+        user_id: user.id,
         card_id: current.id,
         difficulty: card.difficulty,
         stability: card.stability,
@@ -54,6 +58,12 @@ export default function LearnClient({
         due: now.toISOString(),
         last_review: now.toISOString(),
       });
+
+      if (error) {
+        console.error("Failed to save card:", error);
+        setLoading(false);
+        return;
+      }
 
       setFlipped(false);
       setLoading(false);
