@@ -2,6 +2,7 @@
 
 import { logout } from "@/app/auth/actions";
 import Link from "next/link";
+import Dragon from "@/components/dragon/Dragon";
 
 interface Stats {
   email: string | undefined;
@@ -18,7 +19,7 @@ export default function DashboardClient({ stats }: { stats: Stats }) {
     <div className="flex min-h-dvh flex-col bg-rice">
       <header className="flex items-center justify-between border-b border-ink/5 px-6 py-4">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">🐉</span>
+          <Dragon mood="happy" width={36} height={36} className="inline-block" />
           <span className="text-lg font-bold text-jade-600">Epichinese</span>
         </div>
         <form action={logout}>
@@ -33,7 +34,11 @@ export default function DashboardClient({ stats }: { stats: Stats }) {
 
       <main className="flex flex-1 flex-col items-center gap-8 px-6 py-8">
         <div className="text-center">
-          <span className="text-6xl">🐉</span>
+          <Dragon
+            mood={stats.dueCount > 0 ? "studying" : "happy"}
+            width={110}
+            height={115}
+          />
           <h1 className="mt-2 text-xl font-bold text-ink">
             Nivel {stats.dragonLevel}
           </h1>

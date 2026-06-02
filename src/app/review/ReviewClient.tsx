@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FSRS, Rating } from "ts-fsrs";
+import Dragon from "@/components/dragon/Dragon";
 
 interface CardData {
   card_id: number;
@@ -89,7 +90,7 @@ export default function ReviewClient({
   if (!current) {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center bg-rice px-6 text-center">
-        <span className="mb-4 text-6xl">🎉</span>
+        <Dragon mood="celebrating" width={100} height={105} className="mb-4" />
         <h2 className="text-xl font-bold text-ink">¡Sin tarjetas pendientes!</h2>
         <p className="mt-2 text-sm text-ink/50">
           Vuelve más tarde o aprende nuevas tarjetas.

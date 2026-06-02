@@ -1,11 +1,12 @@
 import Link from "next/link";
+import Dragon from "@/components/dragon/Dragon";
 
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col bg-rice font-sans">
       <header className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-2">
-          <span className="text-2xl">🐉</span>
+          <Dragon mood="happy" width={36} height={36} className="inline-block" />
           <span className="text-xl font-bold text-jade-600">Epichinese</span>
         </div>
         <div className="flex gap-3">
@@ -25,7 +26,7 @@ export default function Home() {
       </header>
 
       <main className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center">
-        <span className="mb-6 text-7xl">🐉</span>
+        <Dragon mood="happy" width={120} height={126} className="mb-6" />
         <h1 className="mb-4 max-w-2xl text-4xl font-bold leading-tight text-ink sm:text-5xl">
           Aprende chino mandarín
           <span className="text-jade-500"> jugando</span>

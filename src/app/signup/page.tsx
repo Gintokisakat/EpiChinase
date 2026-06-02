@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 import { signup } from "@/app/auth/actions";
+import Dragon from "@/components/dragon/Dragon";
 
 export default function SignupPage() {
   const [state, action, pending] = useActionState(signup, undefined);
@@ -11,7 +12,7 @@ export default function SignupPage() {
     <div className="flex min-h-dvh flex-col items-center justify-center bg-rice px-6">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <span className="text-4xl">🐉</span>
+          <Dragon mood="celebrating" width={72} height={75} className="mx-auto" />
           <h1 className="mt-4 text-2xl font-bold text-ink">Crea tu cuenta</h1>
           <p className="mt-1 text-sm text-ink/60">Tu dragón te espera</p>
         </div>
