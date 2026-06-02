@@ -119,7 +119,8 @@ export default function ReviewClient({
         </span>
       </header>
 
-      <main className="flex flex-1 flex-col items-center justify-center px-6">
+      <main className="flex flex-1 flex-col items-center justify-center px-6 gap-4">
+        <Dragon mood="studying" width={64} height={64} />
         <div
           onClick={() => setFlipped(true)}
           className="flex w-full max-w-md cursor-pointer flex-col items-center justify-center rounded-3xl border border-ink/5 bg-white p-10 text-center shadow-lg transition-all hover:shadow-xl min-h-[320px]"
