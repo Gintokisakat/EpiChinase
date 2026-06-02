@@ -32,33 +32,60 @@ Epichinese is a free Chinese learning PWA web app targeting English speakers. Co
 - Run dev server: `bash -c 'source ~/.nvm/nvm.sh && cd /tmp/epichinese && npm run dev'`
 - GitHub PAT in remote URL, cleaned after each push
 
-## Progress
-### Done
-- Node.js 24 LTS + npm via nvm
-- GitHub repo (Gintokisakat/EpiChinase)
-- Next.js 16.2.7 project with TypeScript + Tailwind CSS v4
-- Dependencies: @supabase/supabase-js, @supabase/ssr, framer-motion, canvas-confetti, ts-fsrs
-- Supabase project + Email auth enabled
-- SQL schema: cards, user_cards tables + RLS + profile trigger
-- 7335 cards extracted from Spoonfed Chinese .apkg (CC BY 2.0)
-- Cards seeded to Supabase
-- Auth pages (login, signup) with server actions
-- Middleware for route protection + session refresh
-- Dashboard with stats (due count, new count, streak, XP)
-- Review page with ts-fsrs SRS (4 ratings)
-- Learn page: add new cards to SRS queue
-- Dragon mascot using chr-1x/dragn-emoji (3 moods: happy, studying, celebrating)
-- PWA manifest + SVG icons
-- Tailwind custom theme (jade green palette)
-- GitHub commits pushed
+## Project Audit (June 2026)
 
-### Needs Work
-- Upload 4649 audio files to Supabase Storage
-- Add gamification (streak tracking, XP rewards, dragon level evolution)
-- Practice exercises (tone drills, radical puzzles)
-- Deploy to Vercel for user testing
-- PWA polish (service worker, offline support)
-- Attribution for dragon emoji (CC BY-NC-SA 4.0)
+### What's Solid
+- **Architecture**: Next.js 16 + TypeScript + Tailwind v4 + Supabase — modern, well-chosen stack
+- **Structure**: Server components by default, client only where needed. Clean separation via server actions.
+- **Supabase helpers**: Three clients (browser, server, middleware) properly implemented with `@supabase/ssr`
+- **SRS**: ts-fsrs correctly wired into Review + Learn flows with all 4 rating levels
+- **Auth**: Login/signup with server actions + middleware session refresh
+- **Visual identity**: Jade + gold + rice palette, dragon mascot cohesive across app
+- **Content**: 7335 real Chinese sentences with 4649 audio files extracted from CC-licensed Anki deck
+- **Responsive**: Mobile-first layout, proper spacing and breakpoints
+
+### Critical Bugs (P0)
+1. `retrievability` never written to DB in review flow — FSRS algorithm undercut
+2. Audio files not served — `/audio/` path doesn't exist, 404 on every card
+3. No `profiles` table creation SQL or auto-insert trigger — profile rows don't auto-create
+4. Middleware only protects `/dashboard` — `/review` and `/learn` are exposed
+5. No error boundaries — any runtime crash = full app crash
+6. `user?.id` can be undefined on expired sessions, causing DB errors
+
+### Functional Gaps (P1)
+- No loading states in Review (race condition on ratings)
+- Streak/XP/dragon_level are display-only, never incremented
+- `getNewCards` uses inefficient query (filters in JS instead of SQL)
+- Dashboard "Practicar" and "Logros" buttons are non-functional
+- No error handling for failed Supabase writes
+- `canvas-confetti` and `framer-motion` installed but unused
+- `dragncute.svg` in public/ never used
+
+### Quality & UX (P2)
+- No dragon emoji attribution (CC BY-NC-SA 4.0)
+- No service worker (PWA not installable, no offline)
+- Audio autoplay blocked on mobile (no play button)
+- No audio in Learn flow
+- No search/filter by tags (GIN-indexed but no UI)
+- No loading.tsx or error.tsx routes
+- No confetti on review completion
+- No password reset flow
+
+### Future (P3/P4)
+- Upload audio to Supabase Storage
+- Practice exercises (tone drills, radical puzzles, stroke order)
+- Dragon evolution system
+- Achievements & study statistics
+- Onboarding flow
+- Deploy to Vercel
+- i18n (English UI)
+- OAuth social login
+- Dark mode
+
+## Dependencies
+- **Installed:** next, react, react-dom, @supabase/supabase-js, @supabase/ssr, ts-fsrs, framer-motion, canvas-confetti
+- **Unused:** framer-motion, canvas-confetti (dead weight)
+- **Needed:** @serwist/next (PWA service worker)
 
 ## Technical Notes
 - Web Speech API: SpeechRecognition works in Chrome/Edge; PWA targets Chrome/Android
