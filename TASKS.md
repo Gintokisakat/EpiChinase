@@ -99,8 +99,8 @@
 - [ ] **Deploy to Vercel**
 - [x] **i18n / dark mode** — Bilingual (es/en) + dark mode toggle
 - [ ] **OAuth (Google, etc.)**
-- [ ] **Leaderboard / daily quests / shop**
-- [ ] **Podcast player**
+- [x] **Leaderboard / daily quests / shop** — Clasificación, 5 misiones diarias, tienda con XP
+- [x] **Podcast player** — 6 episodios curados con reproductor YouTube
 
 ---
 

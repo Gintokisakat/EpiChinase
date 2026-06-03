@@ -154,6 +154,19 @@ export default function StatsClient({ stats }: { stats: Stats }) {
           </div>
           <span className="ml-auto" style={{ color: "var(--text-muted)" }}>→</span>
         </Link>
+
+        <Link
+          href="/podcast"
+          className="flex w-full max-w-md items-center gap-4 rounded-2xl px-5 py-4 transition-all hover:border-jade-300"
+          style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-border)" }}
+        >
+          <span className="text-2xl">🎙️</span>
+          <div>
+            <p className="font-bold" style={{ color: "var(--text-primary)" }}>Podcasts</p>
+            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Escucha chino real</p>
+          </div>
+          <span className="ml-auto" style={{ color: "var(--text-muted)" }}>→</span>
+        </Link>
       </main>
     </div>
   );

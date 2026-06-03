@@ -223,6 +223,11 @@ const translations = {
       themes: "Temas",
       confirmBuy: "¿Comprar por",
     },
+    podcast: {
+      title: "Podcasts",
+      episodes: "Episodios",
+      disclaimer: "Los episodios se reproducen a través de YouTube. Pueden contener anuncios.",
+    },
   },
 
   en: {
@@ -448,6 +453,11 @@ const translations = {
       skins: "Dragon skins",
       themes: "Themes",
       confirmBuy: "Buy for",
+    },
+    podcast: {
+      title: "Podcasts",
+      episodes: "Episodes",
+      disclaimer: "Episodes play via YouTube. May contain ads.",
     },
   },
 };
