@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FSRS, Rating } from "ts-fsrs";
@@ -166,6 +166,27 @@ export default function ReviewClient({
     },
     [current, index, cards.length, router, f, loading],
   );
+
+  const keyActions = useMemo(
+    () => ({
+      " ": () => !loading && setFlipped(true),
+      ArrowLeft: () => flipped && !loading && handleRating(Rating.Hard),
+      ArrowRight: () => flipped && !loading && handleRating(Rating.Easy),
+    }),
+    [loading, flipped, handleRating],
+  );
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const action = keyActions[e.key as keyof typeof keyActions];
+      if (action) {
+        e.preventDefault();
+        action();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [keyActions]);
 
   if (!current) {
     return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FSRS, Rating, createEmptyCard } from "ts-fsrs";
@@ -32,8 +32,26 @@ export default function LearnClient({
   const [learned, setLearned] = useState<NewCard[]>([]);
   const [done, setDone] = useState(false);
   const f = new FSRS({});
-
   const current = cards[index];
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const playAudio = useCallback((filename: string) => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    const el = new Audio(`/api/audio/${filename}`);
+    audioRef.current = el;
+    el.play().catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const audio = current?.audio;
+    if (audio) {
+      const timer = setTimeout(() => playAudio(audio), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [current?.audio, current?.id, playAudio]);
 
   const addCard = useCallback(
     async (rating: Rating) => {
@@ -83,6 +101,27 @@ export default function LearnClient({
     },
     [current, index, cards.length, router, f],
   );
+
+  const keyActions = useMemo(
+    () => ({
+      " ": () => !loading && setFlipped(true),
+      ArrowLeft: () => flipped && !loading && addCard(Rating.Hard),
+      ArrowRight: () => flipped && !loading && addCard(Rating.Easy),
+    }),
+    [loading, flipped, addCard],
+  );
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const action = keyActions[e.key as keyof typeof keyActions];
+      if (action) {
+        e.preventDefault();
+        action();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [keyActions]);
 
   if (done) {
     return (
@@ -162,6 +201,17 @@ export default function LearnClient({
               <p className="text-4xl font-bold text-ink">
                 {current.chinese}
               </p>
+              {current.audio && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    playAudio(current.audio!);
+                  }}
+                  className="mt-4 rounded-lg bg-jade-500 px-4 py-2 text-sm text-white"
+                >
+                  🔊 Escuchar
+                </button>
+              )}
             </>
           ) : (
             <>
@@ -169,6 +219,17 @@ export default function LearnClient({
               <p className="mb-6 text-2xl text-jade-600">{current.pinyin}</p>
               <p className="mb-2 text-sm text-ink/30">Español</p>
               <p className="text-xl text-ink/70">{current.english}</p>
+              {current.audio && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    playAudio(current.audio!);
+                  }}
+                  className="mt-4 rounded-lg bg-jade-500 px-4 py-2 text-sm text-white"
+                >
+                  🔊 Escuchar
+                </button>
+              )}
             </>
           )}
         </div>

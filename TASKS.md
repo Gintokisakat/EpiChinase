@@ -71,9 +71,9 @@
 ## Pendientes
 
 ### P1 — Must Have
-- [ ] **Keyboard shortcuts in review** — ← Hard, → Easy, space to flip
-- [ ] **Audio in Learn flow** — Play audio when learning new cards
-- [ ] **PWA service worker** — Offline support via `@serwist/next`
+- [x] **Keyboard shortcuts in review** — ← Hard, → Easy, space to flip
+- [x] **Audio in Learn flow** — Play audio when learning new cards
+- [x] **PWA service worker** — Offline support via `@serwist/next`
 
 ### P2 — Should Have
 - [ ] **Pinyin style toggle** — Tone marks (nǐ hǎo) vs numbers (ni3 hao3)
@@ -109,3 +109,4 @@
 - `dragncute.svg` unused
 - Middleware uses deprecated file convention (migrate to `proxy`)
 - Audio files only work locally via `AUDIO_DIR` env var
+- Build requires `--webpack` flag (Turbopack incompatible with `@serwist/next`)
