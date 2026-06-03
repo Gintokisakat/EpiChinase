@@ -93,7 +93,7 @@
 - [ ] **Upload audio to Supabase Storage** — For production
 
 ### P4 — Future
-- [ ] **Dragon evolution** — Changes at XP milestones
+- [x] **Dragon evolution** — Changes at XP milestones (5 tiers with CSS filters + accessories)
 - [ ] **Achievements / badges**
 - [ ] **Onboarding flow**
 - [ ] **Deploy to Vercel**

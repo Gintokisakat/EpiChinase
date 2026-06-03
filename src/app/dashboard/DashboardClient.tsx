@@ -61,7 +61,7 @@ export default function DashboardClient({ stats, wordOfDay }: { stats: Stats; wo
     <div className="flex min-h-dvh flex-col bg-rice">
       <header className="flex items-center justify-between border-b border-ink/5 px-6 py-4">
         <div className="flex items-center gap-2">
-          <Dragon mood="happy" width={36} height={36} className="inline-block" />
+          <Dragon mood="happy" width={36} height={36} className="inline-block" level={stats.dragonLevel} />
           <span className="text-lg font-bold text-jade-600">Epichinese</span>
         </div>
         <div className="flex items-center gap-2">
@@ -85,6 +85,7 @@ export default function DashboardClient({ stats, wordOfDay }: { stats: Stats; wo
             mood={stats.dueCount > 0 ? "studying" : "happy"}
             width={110}
             height={115}
+            level={stats.dragonLevel}
           />
           <h1 className="mt-2 text-xl font-bold text-ink">
             Nivel {stats.dragonLevel}

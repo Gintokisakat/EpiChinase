@@ -155,6 +155,9 @@ export default function ReviewClient({
           setXpPopup({ xp: result.xp, key: Date.now() });
           setTimeout(() => setXpPopup(null), 1500);
         }
+        if (result.newLevel && result.newLevel > 0) {
+          setXpPopup({ xp: result.newLevel, key: Date.now() });
+        }
       });
 
       setFlipped(false);

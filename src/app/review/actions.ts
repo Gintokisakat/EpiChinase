@@ -9,17 +9,26 @@ const XP_REWARDS: Record<number, number> = {
   4: 15,
 };
 
+const LEVEL_THRESHOLDS = [0, 50, 150, 300, 500, 800, 1200, 1800, 2500, 5000];
+
+function computeLevel(xp: number): number {
+  for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+    if (xp >= LEVEL_THRESHOLDS[i]) return i + 1;
+  }
+  return 1;
+}
+
 export async function awardXP(rating: number) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { xp: 0, streak: 0, xpToday: 0 };
+  if (!user) return { xp: 0, streak: 0, xpToday: 0, newLevel: 0 };
 
   const xpGained = XP_REWARDS[rating] ?? 0;
   const today = new Date().toISOString().slice(0, 10);
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("xp, streak, last_study_date")
+    .select("xp, streak, last_study_date, dragon_level")
     .eq("id", user.id)
     .single();
 
@@ -33,10 +42,15 @@ export async function awardXP(rating: number) {
     newStreak = lastDate === yesterdayStr ? newStreak + 1 : 1;
   }
 
+  const newXp = (profile?.xp ?? 0) + xpGained;
+  const newLevel = computeLevel(newXp);
+  const leveledUp = newLevel > (profile?.dragon_level ?? 1);
+
   await supabase
     .from("profiles")
     .update({
-      xp: (profile?.xp ?? 0) + xpGained,
+      xp: newXp,
+      dragon_level: newLevel,
       streak: newStreak,
       last_study_date: today,
     })
@@ -49,5 +63,5 @@ export async function awardXP(rating: number) {
     .gte("last_review", today)
     .neq("state", 0);
 
-  return { xp: xpGained, streak: newStreak, xpToday: (todayData?.length ?? 0) };
+  return { xp: xpGained, streak: newStreak, xpToday: todayData?.length ?? 0, newLevel: leveledUp ? newLevel : 0 };
 }
