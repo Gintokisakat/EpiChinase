@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { convertChinese } from "@/lib/hanzi";
 
 type ExerciseType = "translate" | "listen" | "pinyin";
 
@@ -23,6 +24,13 @@ export async function getPracticeQuestions(count = 12) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return [];
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("hanzi_mode")
+    .eq("id", user.id)
+    .single();
+  const hanziMode = profile?.hanzi_mode ?? "simplified";
+
   const { data: cards } = await supabase
     .from("cards")
     .select("id, chinese, pinyin, english, audio")
@@ -31,7 +39,7 @@ export async function getPracticeQuestions(count = 12) {
   if (!cards || cards.length < count) return [];
 
   const shuffled = cards.sort(() => Math.random() - 0.5);
-  const pool = shuffled.slice(count);
+  const pool = shuffled.slice(count).map((c) => convertChinese(c, hanziMode));
 
   const types: ExerciseType[] = ["translate", "listen", "pinyin"];
   const questions: RawQuestion[] = [];
@@ -39,7 +47,7 @@ export async function getPracticeQuestions(count = 12) {
 
   while (questions.length < count) {
     const type = types[idx % types.length];
-    const card = shuffled[questions.length];
+    const card = convertChinese(shuffled[questions.length], hanziMode);
 
     let options: string[];
     let correctAnswer: string;

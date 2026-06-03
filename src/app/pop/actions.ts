@@ -1,11 +1,19 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { convertChinese } from "@/lib/hanzi";
 
 export async function getPopWords(count = 40) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return [];
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("hanzi_mode")
+    .eq("id", user.id)
+    .single();
+  const hanziMode = profile?.hanzi_mode ?? "simplified";
 
   const { data: cards } = await supabase
     .from("cards")
@@ -13,9 +21,9 @@ export async function getPopWords(count = 40) {
     .limit(120);
 
   if (!cards) return [];
-  return cards.sort(() => Math.random() - 0.5).slice(0, count).map((c) => ({
+  return cards.sort(() => Math.random() - 0.5).slice(0, count).map((c) => convertChinese({
     id: c.id,
     hanzi: c.chinese,
     pinyin: c.pinyin,
-  }));
+  }, hanziMode));
 }

@@ -8,12 +8,14 @@ import Dragon from "@/components/dragon/Dragon";
 interface Settings {
   dailyXpGoal: number;
   dailyNewLimit: number;
+  hanziMode: string;
 }
 
 export default function SettingsClient({ settings: initial }: { settings: Settings }) {
   const router = useRouter();
   const [dailyXpGoal, setDailyXpGoal] = useState(initial.dailyXpGoal);
   const [dailyNewLimit, setDailyNewLimit] = useState(initial.dailyNewLimit);
+  const [hanziMode, setHanziMode] = useState(initial.hanziMode);
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -23,6 +25,7 @@ export default function SettingsClient({ settings: initial }: { settings: Settin
     const fd = new FormData();
     fd.set("dailyXpGoal", String(dailyXpGoal));
     fd.set("dailyNewLimit", String(dailyNewLimit));
+    fd.set("hanziMode", hanziMode);
     try {
       await updateSettings(fd);
       setDone(true);
@@ -68,6 +71,31 @@ export default function SettingsClient({ settings: initial }: { settings: Settin
               className="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-center text-lg font-bold text-ink outline-none focus:border-jade-400"
             />
             <p className="mt-1 text-xs text-ink/40">Límite de tarjetas nuevas que podés aprender por día</p>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-ink">Caracteres chinos</label>
+            <div className="flex overflow-hidden rounded-xl border border-ink/10">
+              <button
+                type="button"
+                onClick={() => setHanziMode("simplified")}
+                className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+                  hanziMode === "simplified" ? "bg-jade-500 text-white" : "bg-white text-ink"
+                }`}
+              >
+                简体
+              </button>
+              <button
+                type="button"
+                onClick={() => setHanziMode("traditional")}
+                className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+                  hanziMode === "traditional" ? "bg-jade-500 text-white" : "bg-white text-ink"
+                }`}
+              >
+                繁體
+              </button>
+            </div>
+            <p className="mt-1 text-xs text-ink/40">Simplificado o tradicional para todo el contenido</p>
           </div>
 
           <button

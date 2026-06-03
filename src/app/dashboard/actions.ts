@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { convertChinese } from "@/lib/hanzi";
 
 export async function getDashboardStats() {
   const supabase = await createClient();
@@ -34,9 +35,11 @@ export async function getDashboardStats() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("streak, xp, dragon_level, daily_xp_goal")
+    .select("streak, xp, dragon_level, daily_xp_goal, hanzi_mode")
     .eq("id", user.id)
     .single();
+
+  const hanziMode = profile?.hanzi_mode ?? "simplified";
 
   const today = new Date().toISOString().slice(0, 10);
   const { count: xpToday } = await supabase
@@ -65,7 +68,8 @@ export async function getDashboardStats() {
       const wordMap = new Map(words.map((w) => [w.id, w]));
       recentWords = ids
         .map((id) => wordMap.get(id))
-        .filter(Boolean) as { chinese: string; pinyin: string; english: string }[];
+        .filter(Boolean)
+        .map((w) => convertChinese(w, hanziMode)) as { chinese: string; pinyin: string; english: string }[];
     }
   }
 
@@ -102,6 +106,13 @@ export async function getDueCards(limit = 20) {
 
   if (!userCards || userCards.length === 0) return [];
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("hanzi_mode")
+    .eq("id", user.id)
+    .single();
+  const hanziMode = profile?.hanzi_mode ?? "simplified";
+
   const cardIds = userCards.map((uc) => uc.card_id);
   const { data: cardData } = await supabase
     .from("cards")
@@ -112,12 +123,23 @@ export async function getDueCards(limit = 20) {
 
   return userCards.map((uc) => ({
     ...uc,
-    card: cardData.find((c) => c.id === uc.card_id),
+    card: convertChinese(cardData.find((c) => c.id === uc.card_id), hanziMode),
   }));
 }
 
 export async function getWordOfDay() {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  let hanziMode = "simplified";
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("hanzi_mode")
+      .eq("id", user.id)
+      .single();
+    hanziMode = profile?.hanzi_mode ?? "simplified";
+  }
+
   const today = new Date().toISOString().slice(0, 10);
   let seed = 0;
   for (let i = 0; i < today.length; i++) seed += today.charCodeAt(i) * (i + 1);
@@ -127,7 +149,7 @@ export async function getWordOfDay() {
     .select("id, chinese, pinyin, english, audio");
 
   if (!cards || cards.length === 0) return null;
-  return cards[seed % cards.length];
+  return convertChinese(cards[seed % cards.length], hanziMode);
 }
 
 export async function addWordOfDay(cardId: number) {
@@ -163,6 +185,13 @@ export async function getNewCards(limit = 5) {
   } = await supabase.auth.getUser();
   if (!user) return [];
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("hanzi_mode")
+    .eq("id", user.id)
+    .single();
+  const hanziMode = profile?.hanzi_mode ?? "simplified";
+
   const { data: existingIds } = await supabase
     .from("user_cards")
     .select("card_id")
@@ -176,5 +205,5 @@ export async function getNewCards(limit = 5) {
   }
   const { data: cards } = await query.limit(limit);
 
-  return cards ?? [];
+  return (cards ?? []).map((c) => convertChinese(c, hanziMode));
 }

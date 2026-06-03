@@ -77,7 +77,7 @@
 
 ### P2 — Should Have
 - [ ] **Pinyin style toggle** — Tone marks (nǐ hǎo) vs numbers (ni3 hao3)
-- [ ] **Simplified/Traditional toggle** — opencc-js conversion
+- [x] **Simplified/Traditional toggle** — opencc-js conversion
 - [ ] **Skill tree / unit progression** — Visual path with HSK levels
 - [ ] **Fill-in-the-blank** — Sentence with blank, pick correct word
 - [ ] **Sentence reorder** — Shuffle characters, tap/drag to reorder

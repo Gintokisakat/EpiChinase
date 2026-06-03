@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   last_study_date DATE,
   daily_xp_goal INTEGER DEFAULT 30,
   daily_new_limit INTEGER DEFAULT 10,
+  hanzi_mode TEXT DEFAULT 'simplified',
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
