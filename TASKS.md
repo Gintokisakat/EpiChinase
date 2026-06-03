@@ -1,114 +1,111 @@
-# Epichinese - Roadmap & Task List
+# Epichinese — Roadmap & Task List
+
+## Design Direction
+- **UX inspirado en react-duolingo** para ejercicios interactivos: progress bar, feedback inmediato (verde/rojo), scorecard al final
+- **Navegación base** actual (dashboard → review/learn) se mantiene
+- **SRS tipo Anki** para repaso espaciado, **ejercicios tipo Duolingo** para práctica
+- Gamificación: XP, rachas, daily goal, sonidos, bottom nav
 
 ## Status
-- ⬜ Pending
-- 🔵 In Progress
 - ✅ Completed
-- ❌ Blocked
+- 🔵 In Progress
+- ⬜ Pending
 
 ---
 
-## Phase 0: Foundation ✅
-
-- [x] Next.js 16 + TypeScript + Tailwind v4 project setup
-- [x] Supabase project + Email auth + RLS
+## Foundation ✅
+- [x] Next.js 16 + TypeScript + Tailwind v4
+- [x] Supabase project + Email auth + RLS + schema
 - [x] 7335 cards seeded from Spoonfed Chinese (CC BY 2.0)
 - [x] Auth pages (login, signup) + middleware + session refresh
 - [x] Dashboard with stats + landing page
-- [x] Review page (ts-fsrs SRS, 4 ratings)
+- [x] Review page (ts-fsrs SRS, 4 ratings, retrievability)
 - [x] Learn page (add new cards to SRS)
 - [x] Dragon mascot (chr-1x/dragn-emoji, 3 moods, recolored jade)
 - [x] PWA manifest + SVG icons
+- [x] Audio serving via `/api/audio/[filename]`
+- [x] Error boundaries (`error.tsx`)
+- [x] Profiles table + auto-create trigger on signup
 - [x] CONTEXT.md + TASKS.md
 
 ---
 
-## Phase 1: Fix Critical Bugs 🔵
-
-### P0 — Must Fix
-
-- [ ] **Fix `retrievability` never updated in review** — `FSRS.next()` returns `card.retrievability` but the Supabase update query doesn't include it. This undermines the FSRS algorithm.
-- [ ] **Fix audio serving** — `ReviewClient.tsx` references `/audio/` which doesn't exist. Options: (a) copy files to `public/audio/`, (b) upload to Supabase Storage + signed URLs, (c) custom API route.
-- [ ] **Create `profiles` table migration + auto-insert trigger** — `profiles` table is referenced by dashboard but has no `CREATE TABLE` SQL and no trigger to auto-create rows on user signup.
-- [ ] **Protect `/review` and `/learn` in middleware** — Currently only `/dashboard` is protected. Add paths to `config.matcher`.
-- [ ] **Add error boundaries** — Create `error.tsx` for each route group to prevent full-app crashes.
-- [ ] **Handle user ID being undefined** — If session expires, `user?.id` could be undefined causing DB errors. Add guard checks.
+## Core Features ✅
+- [x] XP awards per rating + animated popup
+- [x] Streak tracking (auto-update on review)
+- [x] Daily XP goal + progress bar on dashboard
+- [x] Word of the Day on dashboard (deterministic, audio + study button)
+- [x] Settings page (daily XP goal + daily new word limit)
+- [x] Show next interval on rating buttons (como Anki)
+- [x] Bottom navigation bar (5 tabs: Inicio, Repasar, Aprender, Practicar, Stats)
+- [x] Stats page (30-day activity chart, totals)
+- [x] Recent words section on dashboard
+- [x] New word daily limit enforced in /learn
+- [x] Celebration screen after learning new words
+- [x] Audio on card reveal + on back of flashcard
+- [x] Sound effects (correct/incorrect/fanfare via Web Audio API)
+- [x] Dragon emoji attribution footer (CC BY-NC-SA 4.0)
+- [x] Fix `getNewCards` query (SQL NOT IN)
+- [x] Fix audio overlapping bug
 
 ---
 
-## Phase 2: Functional Gaps
+## Practice Exercises ✅
+- [x] `/practice` route with type selector (Traducción, Escuchar, Pinyin, Mixto)
+- [x] Multiple choice (hanzi → english)
+- [x] Listen & pick (audio → hanzi)
+- [x] Pinyin match (hanzi → pinyin)
+- [x] Exercise session flow (progress bar, answer, feedback green/red, continue)
+- [x] Scorecard at end (correct/incorrect per question)
+- [x] +10 XP on completion
+- [x] Sound effects per answer + fanfare on completion
+
+---
+
+## Games ✅
+- [x] **Turbo mode** `/turbo`: 60s timed, combo (x2 a 3, x3 a 5+), high score
+- [x] **Burbujas** `/pop`: palabras cayendo, pinyin prompt, 3 vidas, combo scoring
+
+---
+
+## Pendientes
 
 ### P1 — Must Have
-
-- [ ] **Add loading states to Review flow** — `handleRating` has no loading flag; user can click multiple ratings before first completes. Add `isSubmitting` state.
-- [ ] **Implement streak/XP/dragon_level update logic** — Currently display-only. Add triggers: XP for reviews, streak for daily study, level-up formula.
-- [ ] **Fix `getNewCards` inefficient query** — Fetches `limit + learnedIds.size * 2` from DB and filters in JS. Should use SQL `NOT IN` subquery.
-- [ ] **Make dashboard buttons functional or hide them** — "Practicar" and "Logros" buttons have no onClick handlers.
-- [ ] **Add error handling for Supabase mutations** — Review and Learn flows silently ignore failed writes. Add try/catch + user feedback (toast/alert).
-- [ ] **Handle concurrent sessions** — If user has two tabs open, rating the same card twice should be handled (use optimistic locking or disable after first click).
-
-### P1 — Cleanup
-
-- [ ] **Remove unused dead dependencies** — `canvas-confetti` and `framer-motion` are installed but never imported. Remove them or start using them.
-- [ ] **Remove unused SVG** — `public/dragncute.svg` is never used by the Dragon component.
-- [ ] **Remove unused SVGs** — `public/dragon.svg` and `public/dragon-ref.svg` from previous attempts.
-- [ ] **Migrate middleware to `proxy` convention** — Next.js warns that middleware file convention is deprecated.
-
----
-
-## Phase 3: Quality & UX
+- [ ] **Keyboard shortcuts in review** — ← Hard, → Easy, space to flip
+- [ ] **Audio in Learn flow** — Play audio when learning new cards
+- [ ] **PWA service worker** — Offline support via `@serwist/next`
 
 ### P2 — Should Have
+- [ ] **Pinyin style toggle** — Tone marks (nǐ hǎo) vs numbers (ni3 hao3)
+- [ ] **Simplified/Traditional toggle** — opencc-js conversion
+- [ ] **Skill tree / unit progression** — Visual path with HSK levels
+- [ ] **Fill-in-the-blank** — Sentence with blank, pick correct word
+- [ ] **Sentence reorder** — Shuffle characters, tap/drag to reorder
+- [ ] **Dictation exercise** — Play audio, type pinyin with tone marks
+- [ ] **Confetti on review complete** — `canvas-confetti`
+- [ ] **Animate dragon with framer-motion** — Or remove unused deps
 
-- [ ] **Add dragon emoji attribution** — CC BY-NC-SA 4.0 requires credit. Add footer text: "Dragon emoji by khr / chr-1x, CC BY-NC-SA 4.0".
-- [ ] **Add PWA service worker** — Use `@serwist/next` to make the app installable with offline support.
-- [ ] **Add audio controls** — Replace `autoPlay` with a play button for user-initiated playback (respects mobile autoplay policies).
-- [ ] **Add audio to Learn flow** — New cards should also play audio.
-- [ ] **Add responsive refinements** — Fix dragon hardcoded pixel sizes, rating button overflow on small screens, dashboard grid on 320px.
-- [ ] **Add search/filter by tags** — Cards have GIN-indexed tags (HSK levels etc.) but no UI to filter. Add tag selector to filter review/learn queries.
-- [ ] **Add loading.tsx** — Route-level loading states for review, learn, and dashboard pages.
-- [ ] **Add confetti on review complete** — `canvas-confetti` is installed. Use it when review session finishes + dragon celebrates.
-- [ ] **Add "study now" quick action on dashboard** — One-click to start review + learn combined session.
-- [ ] **Add password reset flow** — "Forgot password?" link + Supabase `resetPasswordForEmail()`.
-
-### P2 — Animations
-
-- [ ] **Animate dragon with framer-motion** — Bounce on celebrating, wiggle on studying, entrance animations. (Or remove framer-motion if not going to animate.)
-
----
-
-## Phase 4: Content & Audio
-
-### P3 — Nice to Have
-
-- [ ] **Upload 4649 audio files to Supabase Storage** — Create bucket `audio`, upload with proper naming, generate signed URLs for playback.
-- [ ] **Audio preloading / caching** — Prefetch next 2-3 audio files during review for seamless playback.
-- [ ] **Practice exercises: tone drills** — Listen to audio + identify tone (1ˉ 2ˊ 3ˇ 4ˋ).
-- [ ] **Practice exercises: radical puzzles** — Match radicals to characters.
-- [ ] **Practice exercises: stroke order** — Animated stroke order diagrams for common characters.
-
----
-
-## Phase 5: Gamification & Polish
+### P3 — Content
+- [ ] **Interactive article reader** — Paste Chinese text, clickable words
+- [ ] **Stroke order animations** — hanzi-writer
+- [ ] **Tone practice** — Hear word, tap correct tone
+- [ ] **Speech practice** — Web Speech API pronunciation
+- [ ] **Search/filter by tags** — Filter review/learn by HSK level
+- [ ] **Upload audio to Supabase Storage** — For production
 
 ### P4 — Future
-
-- [ ] **Dragon evolution system** — Dragon grows/transforms at XP milestones (level 5, 10, 25, 50, 100).
-- [ ] **Achievements / badges** — "First review", "7-day streak", "100 cards", "Perfect week" etc.
-- [ ] **Study statistics page** — Charts for daily reviews, retention rate, time spent.
-- [ ] **Onboarding flow** — First-time user gets guided tour of dashboard → learn → review.
-- [ ] **Deploy to Vercel** — Connect GitHub repo to Vercel, add env vars, deploy.
-- [ ] **Testing with real users** — Share URL, collect feedback.
-- [ ] **i18n support** — English UI option for English-speaking learners.
-- [ ] **OAuth/social login** — Google, GitHub sign-in options.
-- [ ] **Dark mode** — `prefers-color-scheme: dark` support.
+- [ ] **Dragon evolution** — Changes at XP milestones
+- [ ] **Achievements / badges**
+- [ ] **Onboarding flow**
+- [ ] **Deploy to Vercel**
+- [ ] **i18n / dark mode / OAuth**
+- [ ] **Leaderboard / daily quests / shop**
+- [ ] **Podcast player**
 
 ---
 
 ## Known Issues
-- `retrievability` never written to DB in review flow (P0)
-- Audio files not served (P0)
-- No `profiles` table auto-creation (P0)
-- Middleware only protects `/dashboard` (P0)
-- `canvas-confetti`, `framer-motion` unused (P1)
-- `dragncute.svg` unused (P1)
+- `canvas-confetti`, `framer-motion` installed but unused
+- `dragncute.svg` unused
+- Middleware uses deprecated file convention (migrate to `proxy`)
+- Audio files only work locally via `AUDIO_DIR` env var

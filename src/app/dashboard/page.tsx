@@ -1,8 +1,9 @@
-import { getDashboardStats } from "./actions";
+import { getDashboardStats, getWordOfDay } from "./actions";
 import DashboardClient from "./DashboardClient";
 
 export default async function DashboardPage() {
   const stats = await getDashboardStats();
+  const wordOfDay = await getWordOfDay();
 
   if (!stats) {
     return (
@@ -12,5 +13,5 @@ export default async function DashboardPage() {
     );
   }
 
-  return <DashboardClient stats={stats} />;
+  return <DashboardClient stats={stats} wordOfDay={wordOfDay} />;
 }

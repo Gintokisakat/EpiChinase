@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
+import BottomNav from "@/components/BottomNav";
+import Footer from "@/components/Footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,7 +35,7 @@ export default function RootLayout({
       lang="es"
       className={`${inter.variable} ${notoSansSC.variable} h-full antialiased`}
     >
-      <body className="min-h-dvh flex flex-col">{children}</body>
+      <body className="min-h-dvh flex flex-col pb-20">{children}<Footer /><BottomNav /></body>
     </html>
   );
 }

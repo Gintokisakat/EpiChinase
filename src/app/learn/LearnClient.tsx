@@ -17,14 +17,20 @@ interface NewCard {
 
 export default function LearnClient({
   initialCards,
+  dailyNewLimit,
+  learnedToday,
 }: {
   initialCards: NewCard[];
+  dailyNewLimit: number;
+  learnedToday: number;
 }) {
   const router = useRouter();
   const [cards, setCards] = useState(initialCards);
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [learned, setLearned] = useState<NewCard[]>([]);
+  const [done, setDone] = useState(false);
   const f = new FSRS({});
 
   const current = cards[index];
@@ -65,17 +71,52 @@ export default function LearnClient({
         return;
       }
 
+      setLearned((prev) => [...prev, current]);
       setFlipped(false);
       setLoading(false);
 
       if (index < cards.length - 1) {
         setIndex((i) => i + 1);
       } else {
-        router.push("/dashboard");
+        setDone(true);
       }
     },
     [current, index, cards.length, router, f],
   );
+
+  if (done) {
+    return (
+      <div className="flex min-h-dvh flex-col bg-rice">
+        <header className="flex items-center justify-center px-6 py-4">
+          <span className="text-lg font-bold text-jade-600">¡Estudiaste {learned.length} palabras!</span>
+        </header>
+        <main className="flex flex-1 flex-col items-center gap-6 px-6 py-4">
+          <Dragon mood="happy" width={100} height={105} />
+          <p className="text-sm text-ink/50 text-center -mt-4">Bien hecho, estas palabras ya están en tu cola de repaso.</p>
+          <div className="flex w-full max-w-md flex-col gap-3">
+            {learned.map((w) => (
+              <div
+                key={w.id}
+                className="flex items-center justify-between rounded-2xl border border-ink/5 bg-white px-5 py-4"
+              >
+                <div>
+                  <p className="text-lg font-bold text-ink">{w.chinese}</p>
+                  <p className="text-sm text-jade-600">{w.pinyin}</p>
+                </div>
+                <p className="text-right text-sm text-ink/50">{w.english}</p>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="rounded-xl bg-jade-500 px-6 py-3 text-sm font-semibold text-white"
+          >
+            Ir al dashboard
+          </button>
+        </main>
+      </div>
+    );
+  }
 
   if (!current) {
     return (
@@ -104,8 +145,9 @@ export default function LearnClient({
         >
           ← Volver
         </button>
-        <span className="text-sm text-ink/40">
-          Nueva {index + 1} / {cards.length}
+        <span className="text-xs text-ink/40 text-right">
+          <span className="block">Nueva {index + 1} / {cards.length}</span>
+          <span className="block">Hoy: {learnedToday + learned.length} / {dailyNewLimit}</span>
         </span>
       </header>
 

@@ -22,24 +22,65 @@ export async function getDashboardStats() {
     .eq("user_id", user.id)
     .eq("state", 0);
 
+  const { count: totalLearned } = await supabase
+    .from("user_cards")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .neq("state", 0);
+
   const { count: totalCards } = await supabase
     .from("cards")
     .select("*", { count: "exact", head: true });
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("streak, xp, dragon_level")
+    .select("streak, xp, dragon_level, daily_xp_goal")
     .eq("id", user.id)
     .single();
+
+  const today = new Date().toISOString().slice(0, 10);
+  const { count: xpToday } = await supabase
+    .from("user_cards")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .gte("last_review", today)
+    .neq("state", 0);
+
+  const { data: recentCards } = await supabase
+    .from("user_cards")
+    .select("card_id, last_review")
+    .eq("user_id", user.id)
+    .neq("state", 0)
+    .order("last_review", { ascending: false })
+    .limit(5);
+
+  let recentWords: { chinese: string; pinyin: string; english: string }[] = [];
+  if (recentCards && recentCards.length > 0) {
+    const ids = recentCards.map((r) => r.card_id);
+    const { data: words } = await supabase
+      .from("cards")
+      .select("id, chinese, pinyin, english")
+      .in("id", ids);
+    if (words) {
+      const wordMap = new Map(words.map((w) => [w.id, w]));
+      recentWords = ids
+        .map((id) => wordMap.get(id))
+        .filter(Boolean) as { chinese: string; pinyin: string; english: string }[];
+    }
+  }
 
   return {
     email: user.email,
     dueCount: dueCount ?? 0,
     newCount: newCount ?? 0,
+    totalLearned: totalLearned ?? 0,
     totalCards: totalCards ?? 7335,
     streak: profile?.streak ?? 0,
     xp: profile?.xp ?? 0,
     dragonLevel: profile?.dragon_level ?? 1,
+    dailyXpGoal: profile?.daily_xp_goal ?? 30,
+    xpToday: xpToday ?? 0,
+    recentWords,
   };
 }
 
@@ -75,6 +116,46 @@ export async function getDueCards(limit = 20) {
   }));
 }
 
+export async function getWordOfDay() {
+  const supabase = await createClient();
+  const today = new Date().toISOString().slice(0, 10);
+  let seed = 0;
+  for (let i = 0; i < today.length; i++) seed += today.charCodeAt(i) * (i + 1);
+
+  const { data: cards } = await supabase
+    .from("cards")
+    .select("id, chinese, pinyin, english, audio");
+
+  if (!cards || cards.length === 0) return null;
+  return cards[seed % cards.length];
+}
+
+export async function addWordOfDay(cardId: number) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "not authenticated" };
+
+  const { data: existing } = await supabase
+    .from("user_cards")
+    .select("id")
+    .eq("user_id", user.id)
+    .eq("card_id", cardId)
+    .maybeSingle();
+
+  if (existing) return { error: "already added" };
+
+  const now = new Date();
+  const { error } = await supabase.from("user_cards").insert({
+    user_id: user.id,
+    card_id: cardId,
+    due: now.toISOString(),
+    last_review: now.toISOString(),
+  });
+
+  if (error) return { error: error.message };
+  return { success: true };
+}
+
 export async function getNewCards(limit = 5) {
   const supabase = await createClient();
   const {
@@ -87,14 +168,13 @@ export async function getNewCards(limit = 5) {
     .select("card_id")
     .eq("user_id", user.id);
 
-  const learnedIds = new Set((existingIds ?? []).map((r) => r.card_id));
+  const learnedIds = (existingIds ?? []).map((r) => r.card_id);
 
-  const { data: cards } = await supabase
-    .from("cards")
-    .select("*")
-    .limit(limit + learnedIds.size * 2);
+  let query = supabase.from("cards").select("*");
+  if (learnedIds.length > 0) {
+    query = query.not("id", "in", `(${learnedIds.join(",")})`);
+  }
+  const { data: cards } = await query.limit(limit);
 
-  if (!cards) return [];
-
-  return cards.filter((c) => !learnedIds.has(c.id)).slice(0, limit);
+  return cards ?? [];
 }

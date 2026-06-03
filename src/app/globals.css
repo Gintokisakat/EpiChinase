@@ -34,3 +34,19 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
 }
+
+@keyframes drop {
+  from { transform: translateY(-80px); opacity: 1; }
+  to { transform: translateY(calc(100dvh + 20px)); opacity: 0.3; }
+}
+
+@keyframes xpFloat {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -60px);
+  }
+}

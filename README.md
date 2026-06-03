@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Epichinese 🇨🇳
+
+Aprende chino mandarín con SRS, ejercicios interactivos y gamificación. PWA mobile-first, 100% gratuita.
+
+## Stack
+
+- **Frontend:** Next.js 16 + TypeScript + Tailwind v4
+- **Backend/Database:** Supabase (PostgreSQL, Auth, RLS)
+- **SRS:** ts-fsrs (Free Spaced Repetition Scheduler v5)
+- **Contenido:** 7335 tarjetas de Spoonfed Chinese (CC BY 2.0)
+- **Mascota:** chr-1x/dragn-emoji (CC BY-NC-SA 4.0)
+
+## Features
+
+- 📖 **Repaso SRS** — Flashcard con algoritmo FSRS, 4 ratings, intervalos visibles
+- 📚 **Aprender** — Agregá tarjetas nuevas a tu cola con límite diario
+- 🎯 **Practicar** — Ejercicios interactivos: traducción, escuchar, pinyin, mixto
+- ⚡ **Modo Turbo** — 60s cronometrado con combo de puntos
+- 🫧 **Burbujas** — Minijuego de palabras cayendo
+- 📊 **Estadísticas** — Gráfico de actividad 30 días, progreso total
+- ⚙️ **Ajustes** — Meta diaria de XP y palabras nuevas
+- 🔥 **Gamificación** — XP, rachas, daily goal, sonidos, Word of the Day
+- 🐉 **Dragón mascota** — 3 estados de ánimo según progreso
+- 📱 **PWA** — Instalable en Android/Chrome
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+nvm use 24
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Requiere archivo `.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+AUDIO_DIR=/tmp/epichinese/data/media
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+```bash
+npm run dev      # Dev server (localhost:3000)
+npm run build    # Production build
+npm run lint     # ESLint
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Atribuciones
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Dragon emoji** by [khr / chr-1x](https://github.com/chr-1x/dragn-emoji), CC BY-NC-SA 4.0
+- **Contenido** de Spoonfed Chinese, [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/)
+- **Algoritmo SRS** [ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs), MIT

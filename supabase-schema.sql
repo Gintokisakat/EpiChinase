@@ -36,6 +36,8 @@ CREATE TABLE IF NOT EXISTS profiles (
   xp INTEGER DEFAULT 0,
   dragon_level INTEGER DEFAULT 1,
   last_study_date DATE,
+  daily_xp_goal INTEGER DEFAULT 30,
+  daily_new_limit INTEGER DEFAULT 10,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
