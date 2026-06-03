@@ -97,7 +97,8 @@
 - [x] **Achievements / badges**
 - [x] **Onboarding flow**
 - [ ] **Deploy to Vercel**
-- [ ] **i18n / dark mode / OAuth**
+- [x] **i18n / dark mode** — Bilingual (es/en) + dark mode toggle
+- [ ] **OAuth (Google, etc.)**
 - [ ] **Leaderboard / daily quests / shop**
 - [ ] **Podcast player**
 

@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { logout } from "@/app/auth/actions";
 import Link from "next/link";
 import Dragon from "@/components/dragon/Dragon";
+import DailyQuests from "@/components/DailyQuests";
 
 interface Word {
   chinese: string;
@@ -75,14 +75,6 @@ export default function DashboardClient({ stats, wordOfDay }: { stats: Stats; wo
           <Link href="/settings" className="rounded-lg border border-ink/10 px-3 py-2 text-sm text-ink/60 transition-colors hover:border-ink/20 hover:text-ink">
             ⚙️
           </Link>
-          <form action={logout}>
-            <button
-              type="submit"
-              className="rounded-lg border border-ink/10 px-4 py-2 text-sm text-ink/60 transition-colors hover:border-ink/20 hover:text-ink"
-            >
-              Cerrar sesión
-            </button>
-          </form>
         </div>
       </header>
 
@@ -160,6 +152,8 @@ export default function DashboardClient({ stats, wordOfDay }: { stats: Stats; wo
             </div>
           </div>
         </div>
+
+        <DailyQuests />
 
         <div className="grid w-full max-w-md grid-cols-2 gap-4">
           <Link

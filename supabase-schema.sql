@@ -101,3 +101,62 @@ CREATE POLICY "users can read own achievements"
   ON achievements FOR SELECT USING (auth.uid() = user_id);
 CREATE POLICY "users can insert own achievements"
   ON achievements FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- Shop: purchasable items
+CREATE TABLE IF NOT EXISTS shop_items (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  icon TEXT NOT NULL,
+  price INTEGER NOT NULL,
+  item_type TEXT NOT NULL DEFAULT 'dragon_skin',
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- User purchases
+CREATE TABLE IF NOT EXISTS user_purchases (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  item_id TEXT NOT NULL REFERENCES shop_items(id),
+  purchased_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(user_id, item_id)
+);
+
+ALTER TABLE shop_items ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "anyone can read shop items"
+  ON shop_items FOR SELECT USING (auth.role() = 'authenticated');
+
+ALTER TABLE user_purchases ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "users can read own purchases"
+  ON user_purchases FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "users can insert own purchases"
+  ON user_purchases FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+-- Insert default shop items
+INSERT INTO shop_items (id, name, description, icon, price, item_type) VALUES
+  ('skin_ruby', 'Dragon Rubí', 'Tu dragón brilla en rojo rubí', '🔴', 200, 'dragon_skin'),
+  ('skin_sapphire', 'Dragon Zafiro', 'Tu dragón resplandece en azul zafiro', '🔵', 500, 'dragon_skin'),
+  ('skin_amethyst', 'Dragon Amatista', 'Tu dragón irradia púrpura amatista', '🟣', 1000, 'dragon_skin'),
+  ('skin_gold', 'Dragon Dorado', 'Tu dragón es de oro puro', '🟡', 2000, 'dragon_skin'),
+  ('theme_night', 'Tema Nocturno', 'Fondo oscuro premium con estrellas', '🌙', 300, 'theme')
+ON CONFLICT (id) DO NOTHING;
+
+-- Daily quests: user progress
+CREATE TABLE IF NOT EXISTS daily_quests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  quest_id TEXT NOT NULL,
+  progress INTEGER DEFAULT 0,
+  goal INTEGER NOT NULL,
+  completed BOOLEAN DEFAULT false,
+  date DATE NOT NULL,
+  UNIQUE(user_id, quest_id, date)
+);
+
+ALTER TABLE daily_quests ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "users can read own quests"
+  ON daily_quests FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "users can insert own quests"
+  ON daily_quests FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "users can update own quests"
+  ON daily_quests FOR UPDATE USING (auth.uid() = user_id);

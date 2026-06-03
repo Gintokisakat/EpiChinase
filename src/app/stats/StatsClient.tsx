@@ -105,26 +105,54 @@ export default function StatsClient({ stats }: { stats: Stats }) {
 
         <Link
           href="/tree"
-          className="flex w-full max-w-md items-center gap-4 rounded-2xl border border-ink/5 bg-white px-5 py-4 transition-all hover:border-jade-300"
+          className="flex w-full max-w-md items-center gap-4 rounded-2xl px-5 py-4 transition-all hover:border-jade-300"
+          style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-border)" }}
         >
           <span className="text-2xl">🌳</span>
           <div>
-            <p className="font-bold text-ink">Árbol de progreso</p>
-            <p className="text-xs text-ink/40">Niveles y avance por etapa</p>
+            <p className="font-bold" style={{ color: "var(--text-primary)" }}>Árbol de progreso</p>
+            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Niveles y avance por etapa</p>
           </div>
-          <span className="ml-auto text-ink/20">→</span>
+          <span className="ml-auto" style={{ color: "var(--text-muted)" }}>→</span>
         </Link>
 
         <Link
           href="/achievements"
-          className="flex w-full max-w-md items-center gap-4 rounded-2xl border border-ink/5 bg-white px-5 py-4 transition-all hover:border-jade-300"
+          className="flex w-full max-w-md items-center gap-4 rounded-2xl px-5 py-4 transition-all hover:border-jade-300"
+          style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-border)" }}
         >
           <span className="text-2xl">🏆</span>
           <div>
-            <p className="font-bold text-ink">Logros</p>
-            <p className="text-xs text-ink/40">Medallas y objetivos completados</p>
+            <p className="font-bold" style={{ color: "var(--text-primary)" }}>Logros</p>
+            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Medallas y objetivos completados</p>
           </div>
-          <span className="ml-auto text-ink/20">→</span>
+          <span className="ml-auto" style={{ color: "var(--text-muted)" }}>→</span>
+        </Link>
+
+        <Link
+          href="/leaderboard"
+          className="flex w-full max-w-md items-center gap-4 rounded-2xl px-5 py-4 transition-all hover:border-jade-300"
+          style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-border)" }}
+        >
+          <span className="text-2xl">🏅</span>
+          <div>
+            <p className="font-bold" style={{ color: "var(--text-primary)" }}>Clasificación</p>
+            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Compara tu progreso con otros</p>
+          </div>
+          <span className="ml-auto" style={{ color: "var(--text-muted)" }}>→</span>
+        </Link>
+
+        <Link
+          href="/shop"
+          className="flex w-full max-w-md items-center gap-4 rounded-2xl px-5 py-4 transition-all hover:border-jade-300"
+          style={{ background: "var(--bg-card)", border: "1px solid var(--bg-card-border)" }}
+        >
+          <span className="text-2xl">🛒</span>
+          <div>
+            <p className="font-bold" style={{ color: "var(--text-primary)" }}>Tienda</p>
+            <p className="text-xs" style={{ color: "var(--text-secondary)" }}>Pieles y temas con XP</p>
+          </div>
+          <span className="ml-auto" style={{ color: "var(--text-muted)" }}>→</span>
         </Link>
       </main>
     </div>
