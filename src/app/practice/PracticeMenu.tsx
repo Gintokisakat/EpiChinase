@@ -6,32 +6,36 @@ import Link from "next/link";
 import Dragon from "@/components/dragon/Dragon";
 import PracticeClient from "./PracticeClient";
 
-type ExerciseType = "translate" | "listen" | "pinyin" | "mixed";
+type QuestionType = "translate" | "listen" | "pinyin" | "cloze";
+type FilterMode = QuestionType | "mixed";
 
 interface Question {
-  type: "translate" | "listen" | "pinyin";
+  type: QuestionType;
   chinese: string;
   pinyin: string;
+  english: string;
   audio: string | null;
   options: string[];
   correctAnswer: string;
   prompt: string;
+  displayText?: string;
 }
 
-const modes: { type: ExerciseType; icon: string; title: string; desc: string }[] = [
+const modes: { type: FilterMode; icon: string; title: string; desc: string }[] = [
   { type: "translate", icon: "📖", title: "Traducción", desc: "Elegí el significado en inglés" },
   { type: "listen", icon: "🎧", title: "Escuchar", desc: "Identificá el carácter por audio" },
   { type: "pinyin", icon: "🔤", title: "Pinyin", desc: "Elegí el pinyin correcto" },
+  { type: "cloze", icon: "✍️", title: "Completar", desc: "Elegí el carácter que falta en la oración" },
   { type: "mixed", icon: "🎲", title: "Mixto", desc: "Todos los tipos mezclados" },
 ];
 
 export default function PracticeMenu({ questions }: { questions: Question[] }) {
-  const [selectedType, setSelectedType] = useState<ExerciseType | null>(null);
+  const [selectedType, setSelectedType] = useState<FilterMode | null>(null);
 
   if (selectedType) {
-    const filtered = selectedType === "mixed"
+    const filtered: Question[] = selectedType === "mixed"
       ? questions
-      : questions.filter((q) => q.type === selectedType);
+      : questions.filter((q): q is Question => q.type === selectedType);
     return <PracticeClient initialQuestions={filtered} />;
   }
 

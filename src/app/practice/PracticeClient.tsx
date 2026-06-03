@@ -8,13 +8,15 @@ import { playCorrect, playIncorrect, playFanfare } from "@/lib/sounds";
 import confetti from "canvas-confetti";
 
 interface Question {
-  type: "translate" | "listen" | "pinyin";
+  type: "translate" | "listen" | "pinyin" | "cloze";
   chinese: string;
   pinyin: string;
+  english: string;
   audio: string | null;
   options: string[];
   correctAnswer: string;
   prompt: string;
+  displayText?: string;
 }
 
 interface Result {
@@ -100,6 +102,7 @@ export default function PracticeClient({
     translate: "📖",
     listen: "🎧",
     pinyin: "🔤",
+    cloze: "✍️",
   };
 
   if (!current || done) {
@@ -193,6 +196,25 @@ export default function PracticeClient({
 
         {current.type === "pinyin" && (
           <p className="text-center text-3xl font-bold text-ink">{current.chinese}</p>
+        )}
+
+        {current.type === "cloze" && (
+          <div className="w-full max-w-md text-center">
+            <p className="text-2xl font-bold text-ink leading-relaxed">
+              {(current.displayText ?? current.chinese).split("____").map((part, i, arr) => (
+                <span key={i}>
+                  {part}
+                  {i < arr.length - 1 && (
+                    <span className="mx-1 inline-block min-w-[3rem] border-b-2 border-jade-500 text-jade-500">
+                      ?
+                    </span>
+                  )}
+                </span>
+              ))}
+            </p>
+            <p className="mt-3 text-sm text-jade-600">{current.pinyin}</p>
+            <p className="text-xs text-ink/40">{current.english}</p>
+          </div>
         )}
 
         <div className="flex w-full max-w-sm flex-col gap-3">
