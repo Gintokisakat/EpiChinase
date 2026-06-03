@@ -80,7 +80,7 @@
 - [x] **Simplified/Traditional toggle** — opencc-js conversion
 - [ ] **Skill tree / unit progression** — Visual path with HSK levels
 - [ ] **Fill-in-the-blank** — Sentence with blank, pick correct word
-- [ ] **Sentence reorder** — Shuffle characters, tap/drag to reorder
+- [x] **Sentence reorder** — Shuffle characters, tap to order
 - [ ] **Dictation exercise** — Play audio, type pinyin with tone marks
 - [ ] **Confetti on review complete** — `canvas-confetti`
 - [ ] **Animate dragon with framer-motion** — Or remove unused deps

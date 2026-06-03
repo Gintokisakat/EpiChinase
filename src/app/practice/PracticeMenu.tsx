@@ -89,6 +89,17 @@ export default function PracticeMenu({ questions }: { questions: Question[] }) {
             </div>
             <span className="ml-auto text-purple-500">→</span>
           </Link>
+          <Link
+            href="/reorder"
+            className="flex items-center gap-4 rounded-2xl border-2 border-blue-300 bg-gradient-to-r from-blue-50 to-white px-5 py-4 text-left transition-all hover:shadow-md active:scale-[0.98]"
+          >
+            <span className="text-2xl">🧩</span>
+            <div>
+              <p className="font-bold text-ink">Reordenar</p>
+              <p className="text-xs text-ink/40">Ordená los caracteres para formar la oración</p>
+            </div>
+            <span className="ml-auto text-blue-500">→</span>
+          </Link>
         </div>
       </main>
     </div>
