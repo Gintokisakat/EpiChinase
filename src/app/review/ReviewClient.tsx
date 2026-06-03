@@ -6,7 +6,8 @@ import { createClient } from "@/lib/supabase/client";
 import { FSRS, Rating } from "ts-fsrs";
 import Dragon from "@/components/dragon/Dragon";
 import { awardXP } from "./actions";
-import { playCorrect, playIncorrect } from "@/lib/sounds";
+import { playCorrect, playIncorrect, playFanfare } from "@/lib/sounds";
+import confetti from "canvas-confetti";
 
 interface CardData {
   card_id: number;
@@ -161,6 +162,8 @@ export default function ReviewClient({
       if (index < cards.length - 1) {
         setIndex((i) => i + 1);
       } else {
+        playFanfare();
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
         router.push("/dashboard");
       }
     },

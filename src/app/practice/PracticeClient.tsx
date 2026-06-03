@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Dragon from "@/components/dragon/Dragon";
 import { awardXP } from "../review/actions";
 import { playCorrect, playIncorrect, playFanfare } from "@/lib/sounds";
+import confetti from "canvas-confetti";
 
 interface Question {
   type: "translate" | "listen" | "pinyin";
@@ -90,6 +91,7 @@ export default function PracticeClient({
   useEffect(() => {
     if (done && correctCount > 0) {
       playFanfare();
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       awardXP(3).catch(() => {});
     }
   }, [done, correctCount]);

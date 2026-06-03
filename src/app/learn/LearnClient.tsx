@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FSRS, Rating, createEmptyCard } from "ts-fsrs";
 import Dragon from "@/components/dragon/Dragon";
+import { playFanfare } from "@/lib/sounds";
+import confetti from "canvas-confetti";
 
 interface NewCard {
   id: number;
@@ -122,6 +124,12 @@ export default function LearnClient({
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [keyActions]);
+
+  useEffect(() => {
+    if (!done) return;
+    playFanfare();
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+  }, [done]);
 
   if (done) {
     return (
