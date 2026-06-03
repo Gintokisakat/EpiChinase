@@ -115,6 +115,54 @@ export default function PracticeMenu({ questions }: { questions: Question[] }) {
             </div>
             <span className="ml-auto text-teal-500">→</span>
           </Link>
+          <Link
+            href="/tone"
+            className="flex items-center gap-4 rounded-2xl border-2 border-pink-300 bg-gradient-to-r from-pink-50 to-white px-5 py-4 text-left transition-all hover:shadow-md active:scale-[0.98]"
+          >
+            <span className="text-2xl">🎵</span>
+            <div>
+              <p className="font-bold text-ink">Tonos</p>
+              <p className="text-xs text-ink/40">Escuchá y elegí el tono correcto</p>
+            </div>
+            <span className="ml-auto text-pink-500">→</span>
+          </Link>
+          <Link
+            href="/speech"
+            className="flex items-center gap-4 rounded-2xl border-2 border-indigo-300 bg-gradient-to-r from-indigo-50 to-white px-5 py-4 text-left transition-all hover:shadow-md active:scale-[0.98]"
+          >
+            <span className="text-2xl">🗣️</span>
+            <div>
+              <p className="font-bold text-ink">Hablar</p>
+              <p className="text-xs text-ink/40">Practicá pronunciación con tu voz</p>
+            </div>
+            <span className="ml-auto text-indigo-500">→</span>
+          </Link>
+        </div>
+        <div className="flex w-full max-w-sm flex-col gap-3 border-t border-ink/5 pt-6">
+          <Link href="/search" className="flex items-center gap-4 rounded-2xl border border-ink/5 bg-white px-5 py-4 text-left transition-all hover:border-jade-300">
+            <span className="text-2xl">🔍</span>
+            <div>
+              <p className="font-bold text-ink">Buscar palabras</p>
+              <p className="text-xs text-ink/40">Encontrá tarjetas por texto</p>
+            </div>
+            <span className="ml-auto text-ink/20">→</span>
+          </Link>
+          <Link href="/stroke" className="flex items-center gap-4 rounded-2xl border border-ink/5 bg-white px-5 py-4 text-left transition-all hover:border-jade-300">
+            <span className="text-2xl">✏️</span>
+            <div>
+              <p className="font-bold text-ink">Orden de trazos</p>
+              <p className="text-xs text-ink/40">Animación de escritura de caracteres</p>
+            </div>
+            <span className="ml-auto text-ink/20">→</span>
+          </Link>
+          <Link href="/reader" className="flex items-center gap-4 rounded-2xl border border-ink/5 bg-white px-5 py-4 text-left transition-all hover:border-jade-300">
+            <span className="text-2xl">📄</span>
+            <div>
+              <p className="font-bold text-ink">Lector</p>
+              <p className="text-xs text-ink/40">Pegá texto y tocá caracteres para ver significado</p>
+            </div>
+            <span className="ml-auto text-ink/20">→</span>
+          </Link>
         </div>
       </main>
     </div>

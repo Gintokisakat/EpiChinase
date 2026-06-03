@@ -85,11 +85,11 @@
 - [ ] **Animate dragon with framer-motion** — Or remove unused deps
 
 ### P3 — Content
-- [ ] **Interactive article reader** — Paste Chinese text, clickable words
-- [ ] **Stroke order animations** — hanzi-writer
-- [ ] **Tone practice** — Hear word, tap correct tone
-- [ ] **Speech practice** — Web Speech API pronunciation
-- [ ] **Search/filter by tags** — Filter review/learn by HSK level
+- [x] **Interactive article reader** — Paste Chinese text, clickable characters with definitions
+- [x] **Stroke order animations** — hanzi-writer
+- [x] **Tone practice** — Hear word, pick correct pinyin with tones
+- [x] **Speech practice** — Web Speech API pronunciation
+- [x] **Search/filter by text** — Buscar tarjetas por chino/pinyin/inglés
 - [ ] **Upload audio to Supabase Storage** — For production
 
 ### P4 — Future
