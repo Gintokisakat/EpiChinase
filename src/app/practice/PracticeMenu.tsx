@@ -104,6 +104,17 @@ export default function PracticeMenu({ questions }: { questions: Question[] }) {
             </div>
             <span className="ml-auto text-blue-500">→</span>
           </Link>
+          <Link
+            href="/dictation"
+            className="flex items-center gap-4 rounded-2xl border-2 border-teal-300 bg-gradient-to-r from-teal-50 to-white px-5 py-4 text-left transition-all hover:shadow-md active:scale-[0.98]"
+          >
+            <span className="text-2xl">🎤</span>
+            <div>
+              <p className="font-bold text-ink">Dictado</p>
+              <p className="text-xs text-ink/40">Escuchá y escribí el pinyin correcto</p>
+            </div>
+            <span className="ml-auto text-teal-500">→</span>
+          </Link>
         </div>
       </main>
     </div>

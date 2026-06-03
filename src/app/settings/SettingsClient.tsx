@@ -9,6 +9,7 @@ interface Settings {
   dailyXpGoal: number;
   dailyNewLimit: number;
   hanziMode: string;
+  pinyinMode: string;
 }
 
 export default function SettingsClient({ settings: initial }: { settings: Settings }) {
@@ -16,6 +17,7 @@ export default function SettingsClient({ settings: initial }: { settings: Settin
   const [dailyXpGoal, setDailyXpGoal] = useState(initial.dailyXpGoal);
   const [dailyNewLimit, setDailyNewLimit] = useState(initial.dailyNewLimit);
   const [hanziMode, setHanziMode] = useState(initial.hanziMode);
+  const [pinyinMode, setPinyinMode] = useState(initial.pinyinMode);
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
 
@@ -26,6 +28,7 @@ export default function SettingsClient({ settings: initial }: { settings: Settin
     fd.set("dailyXpGoal", String(dailyXpGoal));
     fd.set("dailyNewLimit", String(dailyNewLimit));
     fd.set("hanziMode", hanziMode);
+    fd.set("pinyinMode", pinyinMode);
     try {
       await updateSettings(fd);
       setDone(true);
@@ -96,6 +99,31 @@ export default function SettingsClient({ settings: initial }: { settings: Settin
               </button>
             </div>
             <p className="mt-1 text-xs text-ink/40">Simplificado o tradicional para todo el contenido</p>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-ink">Pinyin</label>
+            <div className="flex overflow-hidden rounded-xl border border-ink/10">
+              <button
+                type="button"
+                onClick={() => setPinyinMode("tones")}
+                className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+                  pinyinMode === "tones" ? "bg-jade-500 text-white" : "bg-white text-ink"
+                }`}
+              >
+                nǐ hǎo
+              </button>
+              <button
+                type="button"
+                onClick={() => setPinyinMode("numbers")}
+                className={`flex-1 py-3 text-sm font-semibold transition-colors ${
+                  pinyinMode === "numbers" ? "bg-jade-500 text-white" : "bg-white text-ink"
+                }`}
+              >
+                ni3 hao3
+              </button>
+            </div>
+            <p className="mt-1 text-xs text-ink/40">Tildes o números para los tonos del pinyin</p>
           </div>
 
           <button

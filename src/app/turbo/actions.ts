@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { convertChinese } from "@/lib/hanzi";
+import { convertFields } from "@/lib/hanzi";
 
 export async function getTurboQuestions(count = 15) {
   const supabase = await createClient();
@@ -10,10 +10,11 @@ export async function getTurboQuestions(count = 15) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("hanzi_mode")
+    .select("hanzi_mode, pinyin_mode")
     .eq("id", user.id)
     .single();
   const hanziMode = profile?.hanzi_mode ?? "simplified";
+  const pinyinMode = profile?.pinyin_mode ?? "tones";
 
   const { data: cards } = await supabase
     .from("cards")
@@ -34,12 +35,12 @@ export async function getTurboQuestions(count = 15) {
 
     const options = [card.english, ...distractors].sort(() => Math.random() - 0.5);
 
-    return convertChinese({
+    return convertFields({
       id: card.id,
       chinese: card.chinese,
       options,
       correctAnswer: card.english,
-    }, hanziMode);
+    }, hanziMode, pinyinMode);
   });
 }
 

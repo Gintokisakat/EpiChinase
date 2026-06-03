@@ -3,7 +3,15 @@
 import { createClient } from "@/lib/supabase/server";
 import { convertFields } from "@/lib/hanzi";
 
-export async function getPopWords(count = 40) {
+export interface DictationQuestion {
+  id: number;
+  audio: string;
+  pinyin: string;
+  chinese: string;
+  english: string;
+}
+
+export async function getDictationQuestions(count = 10) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return [];
@@ -18,13 +26,18 @@ export async function getPopWords(count = 40) {
 
   const { data: cards } = await supabase
     .from("cards")
-    .select("id, chinese, pinyin, english")
-    .limit(120);
+    .select("id, chinese, pinyin, english, audio")
+    .not("audio", "is", null);
 
-  if (!cards) return [];
-  return cards.sort(() => Math.random() - 0.5).slice(0, count).map((c) => convertFields({
-    id: c.id,
-    hanzi: c.chinese,
-    pinyin: c.pinyin,
+  if (!cards || cards.length < count) return [];
+
+  const shuffled = cards.sort(() => Math.random() - 0.5).slice(0, count);
+
+  return shuffled.map((card) => convertFields({
+    id: card.id,
+    audio: card.audio!,
+    pinyin: card.pinyin,
+    chinese: card.chinese,
+    english: card.english,
   }, hanziMode, pinyinMode));
 }

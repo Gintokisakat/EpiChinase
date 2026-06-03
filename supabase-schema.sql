@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   daily_xp_goal INTEGER DEFAULT 30,
   daily_new_limit INTEGER DEFAULT 10,
   hanzi_mode TEXT DEFAULT 'simplified',
+  pinyin_mode TEXT DEFAULT 'tones',
   created_at TIMESTAMPTZ DEFAULT now()
 );
 

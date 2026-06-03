@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { convertChinese } from "@/lib/hanzi";
+import { convertFields } from "@/lib/hanzi";
 
 export interface ReorderQuestion {
   id: number;
@@ -19,10 +19,11 @@ export async function getReorderQuestions(count = 10) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("hanzi_mode")
+    .select("hanzi_mode, pinyin_mode")
     .eq("id", user.id)
     .single();
   const hanziMode = profile?.hanzi_mode ?? "simplified";
+  const pinyinMode = profile?.pinyin_mode ?? "tones";
 
   const { data: cards } = await supabase
     .from("cards")
@@ -47,6 +48,6 @@ export async function getReorderQuestions(count = 10) {
       english: card.english,
       audio: card.audio,
     };
-    return convertChinese(question, hanziMode);
+    return convertFields(question, hanziMode, pinyinMode);
   });
 }

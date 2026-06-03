@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { convertChinese } from "@/lib/hanzi";
+import { convertFields } from "@/lib/hanzi";
 
 export async function getDashboardStats() {
   const supabase = await createClient();
@@ -35,11 +35,12 @@ export async function getDashboardStats() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("streak, xp, dragon_level, daily_xp_goal, hanzi_mode")
+    .select("streak, xp, dragon_level, daily_xp_goal, hanzi_mode, pinyin_mode")
     .eq("id", user.id)
     .single();
 
   const hanziMode = profile?.hanzi_mode ?? "simplified";
+  const pinyinMode = profile?.pinyin_mode ?? "tones";
 
   const today = new Date().toISOString().slice(0, 10);
   const { count: xpToday } = await supabase
@@ -69,7 +70,7 @@ export async function getDashboardStats() {
       recentWords = ids
         .map((id) => wordMap.get(id))
         .filter(Boolean)
-        .map((w) => convertChinese(w, hanziMode)) as { chinese: string; pinyin: string; english: string }[];
+        .map((w) => convertFields(w, hanziMode, pinyinMode)) as { chinese: string; pinyin: string; english: string }[];
     }
   }
 
@@ -108,10 +109,11 @@ export async function getDueCards(limit = 20) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("hanzi_mode")
+    .select("hanzi_mode, pinyin_mode")
     .eq("id", user.id)
     .single();
   const hanziMode = profile?.hanzi_mode ?? "simplified";
+  const pinyinMode = profile?.pinyin_mode ?? "tones";
 
   const cardIds = userCards.map((uc) => uc.card_id);
   const { data: cardData } = await supabase
@@ -123,7 +125,7 @@ export async function getDueCards(limit = 20) {
 
   return userCards.map((uc) => ({
     ...uc,
-    card: convertChinese(cardData.find((c) => c.id === uc.card_id), hanziMode),
+    card: convertFields(cardData.find((c) => c.id === uc.card_id), hanziMode, pinyinMode),
   }));
 }
 
@@ -131,13 +133,15 @@ export async function getWordOfDay() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   let hanziMode = "simplified";
+  let pinyinMode = "tones";
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
-      .select("hanzi_mode")
+      .select("hanzi_mode, pinyin_mode")
       .eq("id", user.id)
       .single();
     hanziMode = profile?.hanzi_mode ?? "simplified";
+    pinyinMode = profile?.pinyin_mode ?? "tones";
   }
 
   const today = new Date().toISOString().slice(0, 10);
@@ -149,7 +153,7 @@ export async function getWordOfDay() {
     .select("id, chinese, pinyin, english, audio");
 
   if (!cards || cards.length === 0) return null;
-  return convertChinese(cards[seed % cards.length], hanziMode);
+  return convertFields(cards[seed % cards.length], hanziMode, pinyinMode);
 }
 
 export async function addWordOfDay(cardId: number) {
@@ -187,10 +191,11 @@ export async function getNewCards(limit = 5) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("hanzi_mode")
+    .select("hanzi_mode, pinyin_mode")
     .eq("id", user.id)
     .single();
   const hanziMode = profile?.hanzi_mode ?? "simplified";
+  const pinyinMode = profile?.pinyin_mode ?? "tones";
 
   const { data: existingIds } = await supabase
     .from("user_cards")
@@ -205,5 +210,5 @@ export async function getNewCards(limit = 5) {
   }
   const { data: cards } = await query.limit(limit);
 
-  return (cards ?? []).map((c) => convertChinese(c, hanziMode));
+  return (cards ?? []).map((c) => convertFields(c, hanziMode, pinyinMode));
 }

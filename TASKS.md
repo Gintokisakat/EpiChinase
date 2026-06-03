@@ -76,12 +76,11 @@
 - [x] **PWA service worker** — Offline support via `@serwist/next`
 
 ### P2 — Should Have
-- [ ] **Pinyin style toggle** — Tone marks (nǐ hǎo) vs numbers (ni3 hao3)
+- [x] **Pinyin style toggle** — Tone marks (nǐ hǎo) vs numbers (ni3 hao3)
 - [x] **Simplified/Traditional toggle** — opencc-js conversion
-- [x] **Skill tree / unit progression** — Visual path with 10 levels (Principiante → Maestro)
 - [x] **Fill-in-the-blank** — Sentence with blank, pick correct word
 - [x] **Sentence reorder** — Shuffle characters, tap to order
-- [ ] **Dictation exercise** — Play audio, type pinyin with tone marks
+- [x] **Dictation exercise** — Play audio, type pinyin with tone marks
 - [ ] **Confetti on review complete** — `canvas-confetti`
 - [ ] **Animate dragon with framer-motion** — Or remove unused deps
 
