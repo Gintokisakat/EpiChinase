@@ -78,7 +78,7 @@
 ### P2 — Should Have
 - [ ] **Pinyin style toggle** — Tone marks (nǐ hǎo) vs numbers (ni3 hao3)
 - [x] **Simplified/Traditional toggle** — opencc-js conversion
-- [ ] **Skill tree / unit progression** — Visual path with HSK levels
+- [x] **Skill tree / unit progression** — Visual path with 10 levels (Principiante → Maestro)
 - [x] **Fill-in-the-blank** — Sentence with blank, pick correct word
 - [x] **Sentence reorder** — Shuffle characters, tap to order
 - [ ] **Dictation exercise** — Play audio, type pinyin with tone marks

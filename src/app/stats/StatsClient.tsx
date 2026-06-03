@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Dragon from "@/components/dragon/Dragon";
 
 interface DayData {
@@ -101,6 +102,18 @@ export default function StatsClient({ stats }: { stats: Stats }) {
             <span className="text-sm font-bold text-red-500">{stats.dueCount}</span>
           </div>
         </div>
+
+        <Link
+          href="/tree"
+          className="flex w-full max-w-md items-center gap-4 rounded-2xl border border-ink/5 bg-white px-5 py-4 transition-all hover:border-jade-300"
+        >
+          <span className="text-2xl">🌳</span>
+          <div>
+            <p className="font-bold text-ink">Árbol de progreso</p>
+            <p className="text-xs text-ink/40">Niveles y avance por etapa</p>
+          </div>
+          <span className="ml-auto text-ink/20">→</span>
+        </Link>
       </main>
     </div>
   );
