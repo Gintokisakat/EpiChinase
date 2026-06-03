@@ -41,10 +41,10 @@ export default function DashboardClient({ stats, wordOfDay }: { stats: Stats; wo
   const [added, setAdded] = useState(false);
 
   useEffect(() => {
-    if (!stats.onboarded) {
+    if (!stats.onboarded && stats.xp === 0 && stats.totalLearned === 0) {
       router.replace("/onboarding");
     }
-  }, [stats.onboarded, router]);
+  }, [stats.onboarded, stats.xp, stats.totalLearned, router]);
 
   const handleAddWord = async () => {
     if (!wordOfDay || adding) return;

@@ -29,11 +29,35 @@
   --font-sans: "Inter", "Noto Sans SC", sans-serif;
 }
 
-body {
-  background: var(--color-rice);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
+:root {
+  --bg-primary: #f5f0e8;
+  --bg-card: #ffffff;
+  --bg-card-border: rgba(26, 26, 46, 0.05);
+  --text-primary: #1a1a2e;
+  --text-secondary: rgba(26, 26, 46, 0.5);
+  --text-muted: rgba(26, 26, 46, 0.3);
 }
+
+.dark {
+  --bg-primary: #0f0f1a;
+  --bg-card: #1a1a2e;
+  --bg-card-border: rgba(255, 255, 255, 0.08);
+  --text-primary: #e8e8f0;
+  --text-secondary: rgba(232, 232, 240, 0.6);
+  --text-muted: rgba(232, 232, 240, 0.3);
+}
+
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.bg-card { background: var(--bg-card); }
+.border-card { border-color: var(--bg-card-border); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
 
 @keyframes drop {
   from { transform: translateY(-80px); opacity: 1; }

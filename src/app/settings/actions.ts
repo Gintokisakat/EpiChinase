@@ -9,7 +9,7 @@ export async function getSettings() {
 
   const { data } = await supabase
     .from("profiles")
-    .select("daily_xp_goal, daily_new_limit, hanzi_mode, pinyin_mode")
+    .select("daily_xp_goal, daily_new_limit, hanzi_mode, pinyin_mode, language, dark_mode")
     .eq("id", user.id)
     .single();
 
@@ -18,6 +18,8 @@ export async function getSettings() {
     dailyNewLimit: data?.daily_new_limit ?? 10,
     hanziMode: data?.hanzi_mode ?? "simplified",
     pinyinMode: data?.pinyin_mode ?? "tones",
+    language: (data?.language as "es" | "en") ?? "es",
+    darkMode: data?.dark_mode ?? false,
   };
 }
 
@@ -30,6 +32,8 @@ export async function updateSettings(formData: FormData) {
   const dailyNewLimit = Math.max(1, Math.min(100, parseInt(formData.get("dailyNewLimit") as string) || 10));
   const hanziMode = formData.get("hanziMode") as string;
   const pinyinMode = formData.get("pinyinMode") as string;
+  const language = formData.get("language") as string;
+  const darkMode = formData.get("darkMode") === "true";
 
   const updates: Record<string, unknown> = { daily_xp_goal: dailyXpGoal, daily_new_limit: dailyNewLimit };
   if (hanziMode === "simplified" || hanziMode === "traditional") {
@@ -38,6 +42,10 @@ export async function updateSettings(formData: FormData) {
   if (pinyinMode === "tones" || pinyinMode === "numbers") {
     updates.pinyin_mode = pinyinMode;
   }
+  if (language === "es" || language === "en") {
+    updates.language = language;
+  }
+  updates.dark_mode = darkMode;
 
   const { error } = await supabase
     .from("profiles")

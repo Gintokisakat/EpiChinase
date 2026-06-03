@@ -40,6 +40,8 @@ CREATE TABLE IF NOT EXISTS profiles (
   daily_new_limit INTEGER DEFAULT 10,
   hanzi_mode TEXT DEFAULT 'simplified',
   pinyin_mode TEXT DEFAULT 'tones',
+  language TEXT DEFAULT 'es',
+  dark_mode BOOLEAN DEFAULT false,
   onboarded BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT now()
 );
