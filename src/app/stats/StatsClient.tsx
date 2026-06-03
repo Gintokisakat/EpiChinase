@@ -114,6 +114,18 @@ export default function StatsClient({ stats }: { stats: Stats }) {
           </div>
           <span className="ml-auto text-ink/20">→</span>
         </Link>
+
+        <Link
+          href="/achievements"
+          className="flex w-full max-w-md items-center gap-4 rounded-2xl border border-ink/5 bg-white px-5 py-4 transition-all hover:border-jade-300"
+        >
+          <span className="text-2xl">🏆</span>
+          <div>
+            <p className="font-bold text-ink">Logros</p>
+            <p className="text-xs text-ink/40">Medallas y objetivos completados</p>
+          </div>
+          <span className="ml-auto text-ink/20">→</span>
+        </Link>
       </main>
     </div>
   );

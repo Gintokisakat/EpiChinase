@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   daily_new_limit INTEGER DEFAULT 10,
   hanzi_mode TEXT DEFAULT 'simplified',
   pinyin_mode TEXT DEFAULT 'tones',
+  onboarded BOOLEAN DEFAULT false,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -83,3 +84,18 @@ CREATE POLICY "users can update own progress"
 CREATE INDEX idx_user_cards_user_id ON user_cards(user_id);
 CREATE INDEX idx_user_cards_due ON user_cards(user_id, due);
 CREATE INDEX idx_cards_tags ON cards USING GIN(tags);
+
+-- Achievements: user unlocked badges
+CREATE TABLE IF NOT EXISTS achievements (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  achievement_id TEXT NOT NULL,
+  unlocked_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(user_id, achievement_id)
+);
+
+ALTER TABLE achievements ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "users can read own achievements"
+  ON achievements FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "users can insert own achievements"
+  ON achievements FOR INSERT WITH CHECK (auth.uid() = user_id);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { logout } from "@/app/auth/actions";
 import Link from "next/link";
@@ -32,12 +32,19 @@ interface Stats {
   dailyXpGoal: number;
   xpToday: number;
   recentWords: Word[];
+  onboarded: boolean;
 }
 
 export default function DashboardClient({ stats, wordOfDay }: { stats: Stats; wordOfDay: WordOfDay | null }) {
   const router = useRouter();
   const [adding, setAdding] = useState(false);
   const [added, setAdded] = useState(false);
+
+  useEffect(() => {
+    if (!stats.onboarded) {
+      router.replace("/onboarding");
+    }
+  }, [stats.onboarded, router]);
 
   const handleAddWord = async () => {
     if (!wordOfDay || adding) return;

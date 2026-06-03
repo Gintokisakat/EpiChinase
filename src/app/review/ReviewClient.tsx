@@ -8,6 +8,7 @@ import Dragon from "@/components/dragon/Dragon";
 import { awardXP } from "./actions";
 import { playCorrect, playIncorrect, playFanfare } from "@/lib/sounds";
 import confetti from "canvas-confetti";
+import { ALL_ACHIEVEMENTS } from "@/lib/achievements";
 
 interface CardData {
   card_id: number;
@@ -41,6 +42,7 @@ export default function ReviewClient({
   const [flipped, setFlipped] = useState(false);
   const [loading, setLoading] = useState(false);
   const [xpPopup, setXpPopup] = useState<{ xp: number; key: number } | null>(null);
+  const [achPopup, setAchPopup] = useState<string | null>(null);
   const [intervals, setIntervals] = useState<Record<number, string>>({});
   const f = useRef(new FSRS({})).current;
 
@@ -158,6 +160,11 @@ export default function ReviewClient({
         if (result.newLevel && result.newLevel > 0) {
           setXpPopup({ xp: result.newLevel, key: Date.now() });
         }
+        if (result.newAchievements && result.newAchievements.length > 0) {
+          const ach = result.newAchievements[0];
+          setAchPopup(ach);
+          setTimeout(() => setAchPopup(null), 2500);
+        }
       });
 
       setFlipped(false);
@@ -234,6 +241,13 @@ export default function ReviewClient({
             style={{ animation: "xpFloat 1.5s ease-out forwards" }}
           >
             +{xpPopup.xp} XP
+          </div>
+        )}
+        {achPopup && (
+          <div className="pointer-events-none absolute top-4 left-1/2 -translate-x-1/2 z-10 animate-bounce rounded-2xl bg-gold-500 px-5 py-3 text-center text-white shadow-lg">
+            <span className="text-2xl">{ALL_ACHIEVEMENTS.find(a => a.id === achPopup)?.icon}</span>
+            <p className="text-sm font-bold">¡Logro desbloqueado!</p>
+            <p className="text-xs">{ALL_ACHIEVEMENTS.find(a => a.id === achPopup)?.title}</p>
           </div>
         )}
         <Dragon mood="studying" width={64} height={64} />

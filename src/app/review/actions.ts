@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { checkAndAwardAchievements, getUserAchievements } from "@/app/actions/achievements";
 
 const XP_REWARDS: Record<number, number> = {
   1: 0,
@@ -63,5 +64,8 @@ export async function awardXP(rating: number) {
     .gte("last_review", today)
     .neq("state", 0);
 
-  return { xp: xpGained, streak: newStreak, xpToday: todayData?.length ?? 0, newLevel: leveledUp ? newLevel : 0 };
+  const { unlocked } = await getUserAchievements();
+  const newAchievements = await checkAndAwardAchievements(unlocked);
+
+  return { xp: xpGained, streak: newStreak, xpToday: todayData?.length ?? 0, newLevel: leveledUp ? newLevel : 0, newAchievements };
 }

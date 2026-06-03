@@ -82,7 +82,7 @@
 - [x] **Sentence reorder** — Shuffle characters, tap to order
 - [x] **Dictation exercise** — Play audio, type pinyin with tone marks
 - [ ] **Confetti on review complete** — `canvas-confetti`
-- [ ] **Animate dragon with framer-motion** — Or remove unused deps
+- [x] **Remove unused deps** — `framer-motion` uninstalled, `dragncute.svg` deleted
 
 ### P3 — Content
 - [x] **Interactive article reader** — Paste Chinese text, clickable characters with definitions
@@ -94,8 +94,8 @@
 
 ### P4 — Future
 - [x] **Dragon evolution** — Changes at XP milestones (5 tiers with CSS filters + accessories)
-- [ ] **Achievements / badges**
-- [ ] **Onboarding flow**
+- [x] **Achievements / badges**
+- [x] **Onboarding flow**
 - [ ] **Deploy to Vercel**
 - [ ] **i18n / dark mode / OAuth**
 - [ ] **Leaderboard / daily quests / shop**
@@ -104,8 +104,6 @@
 ---
 
 ## Known Issues
-- `canvas-confetti`, `framer-motion` installed but unused
-- `dragncute.svg` unused
 - Middleware uses deprecated file convention (migrate to `proxy`)
 - Audio files only work locally via `AUDIO_DIR` env var
 - Build requires `--webpack` flag (Turbopack incompatible with `@serwist/next`)

@@ -35,9 +35,10 @@ export async function getDashboardStats() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("streak, xp, dragon_level, daily_xp_goal, hanzi_mode, pinyin_mode")
+    .select("streak, xp, dragon_level, daily_xp_goal, hanzi_mode, pinyin_mode, onboarded")
     .eq("id", user.id)
     .single();
+
 
   const hanziMode = profile?.hanzi_mode ?? "simplified";
   const pinyinMode = profile?.pinyin_mode ?? "tones";
@@ -86,6 +87,7 @@ export async function getDashboardStats() {
     dailyXpGoal: profile?.daily_xp_goal ?? 30,
     xpToday: xpToday ?? 0,
     recentWords,
+    onboarded: profile?.onboarded ?? false,
   };
 }
 
